@@ -41,7 +41,6 @@ def poewheel_page():
     random.shuffle(dream)
 
     return render_template('poewheel/index.html',
-        tick = url_for('static', filename = 'poewheel/tick.mp3'),
         speakr = url_for('static', filename = raven.pop()),
         speakm = url_for('static', filename = masque.pop()),
         speakb = url_for('static', filename = bells.pop()),
