@@ -51,13 +51,17 @@ def poewheel_page():
         speakel = url_for('static', filename = eldorado.pop())
     )
 
-@app.route('/25ravens')
-def ravens25():
-    return render_template('ravens/25.html')
+@app.route('/ravens/<int:numRavens>')
+def ravens(numRavens=25):
 
-@app.route('/250ravens')
-def ravens250():
-    return render_template('ravens/250.html')
+    if numRavens == 1:
+        cawlevel = '/static/ravens/caw.ogg'
+    elif numRavens >= 250:
+        cawlevel = '/static/ravens/loud_cawing.ogg'
+    else:
+        cawlevel = '/static/ravens/cawing.ogg'
+
+    return render_template('ravens/index.html', numRavens = numRavens, cawlevel = cawlevel)
 
 if __name__ == '__main__':
     app.run(debug=True, port=3030, host='0.0.0.0')

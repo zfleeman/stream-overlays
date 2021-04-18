@@ -12,11 +12,11 @@
 </div>
 
 <audio id="myAudio" autoplay = "">
-    <source src="/static/ravens/cawing.ogg" type="audio/ogg">
+    <source src="{{ cawlevel }}" type="audio/ogg">
   </audio>
 <script>
 
-var numRavens = 25;
+var numRavens = parseInt("{{ numRavens }}");
 for (var a=[],i=0;i<1850;++i) a[i]=i;
 for (var b=[],i=0;i<1040;++i) b[i]=i;
 
