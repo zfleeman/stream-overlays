@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title>Macabre Delights</title>
+        <link rel="stylesheet" href="/static/poewheel/main.css" type="text/css" />
+        <script type="text/javascript" src="/static/poewheel/Winwheel.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div align="center">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td width="438" height="582" class="the_wheel" align="center" valign="center">
+                        <canvas id="canvas" width="434" height="434">
+                        </canvas>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script>
+			$("body").fadeOut(12000);
+            // Create new wheel object specifying the parameters at creation time.
+            let theWheel = new Winwheel({
+                'numSegments'  : 8,     // Specify number of segments.
+                'outerRadius'  : 212,   // Set outer radius so wheel fits inside the background.
+                'textFontSize' : 16,    // Set font size as desired.
+                'innerRadius' : 90,
+                'segments'     :        // Define segments including colour and text.
+                [
+                   {'fillStyle' : '#548CFD', 'text' : 'Raven'},
+                   {'fillStyle' : '#FD54E0', 'text' : 'Masque'},
+                   {'fillStyle' : '#FDC554', 'text' : 'Bells'},
+                   {'fillStyle' : '#54FD71', 'text' : 'Heart'},
+                   {'fillStyle' : '#00FFFB', 'text' : 'Cask'},
+                   {'fillStyle' : '#7B00FF', 'text' : 'Haunt'},
+                   {'fillStyle' : '#FF0004', 'text' : 'Dream'},
+                   {'fillStyle' : '#84FF00', 'text' : 'Eldorado'}
+                ],
+                'animation' :           // Specify the animation to use.
+                {
+                    'type'     : 'spinToStop',
+                    'duration' : 5,
+                    'spins'    : 5,
+                    'callbackFinished' : alertPrize,
+                    'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
+                    'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                },
+                'pins' :
+                {
+                    'number' : 16   // Number of pins. They space evenly around the wheel.
+                }
+            });
+
+            // -----------------------------------------------------------------
+            // This function is called when the segment under the prize pointer changes
+            // we can play a small tick sound here like you would expect on real prizewheels.
+            // -----------------------------------------------------------------
+            let audio = new Audio('/static/poewheel/tick.mp3');  // Create audio object and load tick.mp3 file.
+
+            function playSound()
+            {
+                // Stop and rewind the sound if it already happens to be playing.
+                audio.pause();
+                audio.currentTime = 0;
+
+                // Play the sound.
+                audio.play();
+            }
+
+            // -------------------------------------------------------
+            // Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters
+            // note the indicated segment is passed in as a parmeter as 99% of the time you will want to know this to inform the user of their prize.
+            // -------------------------------------------------------
+            function alertPrize(indicatedSegment)
+            {
+                switch(indicatedSegment.text) {
+                    case 'Raven':
+                        let speakr = new Audio('{{ speakr }}');
+                        speakr.play();
+                        break;
+                    case 'Masque':
+                        let speakm = new Audio('{{ speakm }}');
+                        speakm.play();
+                        break;
+                    case 'Bells':
+                        let speakb = new Audio('{{ speakb }}');
+                        speakb.play();
+                        break;
+                    case 'Heart':
+                        let speakh = new Audio('{{ speakh }}');
+                        speakh.play();
+                        break;
+                    case 'Cask':
+                        let speakc = new Audio('{{ speakc }}');
+                        speakc.play();
+                        break;
+                    case 'Haunt':
+                        let speakha = new Audio('{{ speakha }}');
+                        speakha.play();
+                        break;
+                    case 'Dream':
+                        let speakd = new Audio('{{ speakd }}');
+                        speakd.play();
+                        break;
+                    case 'Eldorado':
+                        let speakel = new Audio('{{ speakel }}');
+                        speakel.play();
+                        break;
+                }
+            }
+
+            // =======================================================================================================================
+            // Code below for the power controls etc which is entirely optional. You can spin the wheel simply by
+            // calling theWheel.startAnimation();
+            // =======================================================================================================================
+            let wheelPower    = 0;
+            let wheelSpinning = false;
+
+            // -------------------------------------------------------
+            // Function to handle the onClick on the power buttons.
+            // -------------------------------------------------------
+            function powerSelected(powerLevel)
+            {
+                // Ensure that power can't be changed while wheel is spinning.
+                if (wheelSpinning == false) {
+
+                    // Set wheelPower var used when spin button is clicked.
+                    wheelPower = powerLevel;
+
+                    // Light up the spin button by changing it's source image and adding a clickable class to it.
+                }
+            }
+
+            // -------------------------------------------------------
+            // Click handler for spin button.
+            // -------------------------------------------------------
+            function startSpin()
+            {
+                // Ensure that spinning can't be clicked again while already running.
+                if (wheelSpinning == false) {
+                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
+                    // to rotate with the duration of the animation the quicker the wheel spins.
+                    if (wheelPower == 1) {
+                        theWheel.animation.spins = 3;
+                    } else if (wheelPower == 2) {
+                        theWheel.animation.spins = 8;
+                    } else if (wheelPower == 3) {
+                        theWheel.animation.spins = 5;
+                    }
+
+                    // Disable the spin button so can't click again while wheel is spinning.
+                    // Begin the spin animation by calling startAnimation on the wheel object.
+                    theWheel.startAnimation();
+
+                    // Set to true so that power can't be changed and spin button re-enabled during
+                    // the current animation. The user will have to reset before spinning again.
+                    wheelSpinning = true;
+                }
+            }
+
+            // -------------------------------------------------------
+            // Function for reset button.
+            // -------------------------------------------------------
+            function resetWheel()
+            {
+                theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                theWheel.draw();                // Call draw to render changes to the wheel.
+
+                document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
+                document.getElementById('pw2').className = "";
+                document.getElementById('pw3').className = "";
+
+                wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+            }
+
+            powerSelected(3);
+            startSpin();
+        </script>
+    </body>
+</html>
