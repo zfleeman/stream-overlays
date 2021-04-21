@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for
 import random
+from datetime import datetime as dt
 
 app = Flask(__name__)
 
@@ -11,9 +12,9 @@ def questions_page():
     questions = list(set(questions))
     random.shuffle(questions)
     question = questions.pop()
-
+    t = dt.strftime(dt.now(), '%Y%m%d%H%M%S')
     with open('questions/old.txt', 'a') as f:
-        f.write("%s\n" % question)
+        f.write(f"{question}, {t}\n")
 
     with open('questions/new.txt', 'w') as f:
         f.writelines("%s\n" % q for q in questions)
