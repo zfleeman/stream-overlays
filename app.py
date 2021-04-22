@@ -14,7 +14,7 @@ def questions_page():
     question = questions.pop()
     t = dt.strftime(dt.now(), '%Y%m%d%H%M%S')
     with open('questions/old.txt', 'a') as f:
-        f.write(f"{question}, {t}\n")
+        f.write(f"{question}\t{t}\n")
 
     with open('questions/new.txt', 'w') as f:
         f.writelines("%s\n" % q for q in questions)
